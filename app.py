@@ -1,4 +1,4 @@
-from flask import Flask, render_template,request,redirect,url_for # For flask implementation
+from flask import Flask, render_template,request,redirect,url_for, jsonify # For flask implementation
 from pymongo import MongoClient # Database connector
 from bson.objectid import ObjectId # For ObjectId to work
 
@@ -9,10 +9,6 @@ current_budget = db.current_budget #Select the collection
 app = Flask(__name__)
 title = "Budget with Flask"
 heading = "Budget"
-
-cfs_t = current_budget.find()
-
-
 
 def redirect_url():
     return request.args.get('next') or \
@@ -25,22 +21,21 @@ def lists ():
 	#Display all Cash Flow
 	cfs = current_budget.find()
 	a1="active"
-	return render_template('index.html',a1=a1,cfs=cfs,t=title,h=heading)
-
+	return render_template('index.html',a1=a1,cfs=cfs,t=title,h=heading, total=0)
 
 @app.route("/cf_in")
 def tasks ():
 	#Display Cash flows coming in
 	cfs = current_budget.find({"io":"in"})
 	a2="active"
-	return render_template('index.html',a2=a2,cfs=cfs,t=title,h=heading)
+	return render_template('index.html',a2=a2,cfs=cfs,t=title,h=heading, total=0)
 	
 @app.route("/cf_out")
 def completed ():
 	#Display cash flows coming out
 	cfs = current_budget.find({"io":"out"})
 	a3="active"
-	return render_template('index.html',a3=a3,cfs=cfs,t=title,h=heading)
+	return render_template('index.html',a3=a3,cfs=cfs,t=title,h=heading, total=0)
 	
 @app.route("/add", methods=['POST'])
 def add ():
